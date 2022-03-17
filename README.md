@@ -1,27 +1,18 @@
-# SwDownloadDemo
+# Minimal reproduction for the SW download issue
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.1.2.
 
-## Development server
+## Production build with http-server
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+Run `npm build:serve` and navigate to `127.0.0.1:50000`
 
-## Code scaffolding
+## Replication instructions
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+1) Run the app with `npm build:serve`
+2) Wait until the serviceworker starts the asset download - you should see a bunch of requests in the network tab
+3) Go offline while it's still downloading
+4) The app can now never go offline, even if you refresh the page while online again - the assets are never retried
 
-## Build
+## Additional notes
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+The babel node_modules contents were copied into the `/assets` directory so that there are 1000s of assets downloaded by the serviceworker. These were just used for demo purposes - if there are only a few assets, the issue becomes harder to replicate. None of the source code in that directory is my work.
